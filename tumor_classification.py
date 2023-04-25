@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib.image import imread
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 # Define the path to the dataset
 img_path = '/Users/thear/Documents/Code/tumor_detection/brain_tumor_dataset/'
@@ -71,7 +72,7 @@ for i, ax in enumerate(axs.flat):
         ax.set_title('Healthy (0)')
 
 
-batch_size = 32
+batch_size = 16
 
 # Create an instance of ImageDataGenerator for data augmentation and rescaling
 train_datagen = ImageDataGenerator(
@@ -116,19 +117,19 @@ def design_model():
     
     model.add(InputLayer(input_shape = (256, 256, 1)))
     
-    model.add(Conv2D(128, 5, strides = 3, activation = 'relu'))
+    model.add(Conv2D(256, 3, strides = 3, activation = 'relu'))
     
     model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
     
     model.add(Dropout(0.2))
     
-    model.add(Conv2D(64, 5, strides = 1, activation = 'relu'))
+    model.add(Conv2D(128, 3, strides = 3, activation = 'relu'))
     
     model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
     
     model.add(Dropout(0.2))
     
-    model.add(Conv2D(32, 5, strides = 1, activation = 'relu'))
+    model.add(Conv2D(64, 3, strides = 3, activation = 'relu'))
     
     model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
     
@@ -209,8 +210,19 @@ print(report)
  
 cm=confusion_matrix(true_classes,predicted_classes)
 
-print(cm)
-
+# Plot confusion matrix
+fig, ax3 = plt.subplots(figsize=(5, 5))
+heatmap = sns.heatmap(
+    cm, 
+    fmt = 'g', 
+    cmap = 'mako_r', 
+    annot = True, 
+    ax = ax3)
+ax3.set_xlabel('Predicted class')
+ax3.set_ylabel('True class')
+ax3.set_title('Confusion Matrix')
+ax3.xaxis.set_ticklabels(class_labels)
+ax3.yaxis.set_ticklabels(class_labels)
 
 
 
